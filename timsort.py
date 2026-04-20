@@ -1,7 +1,7 @@
 #!usr/bin/env python3
 
 """
-tim_sort.py
+timsort.py
 An algorithm that implements the TimSort method for sorting arrays. 
 """
 
