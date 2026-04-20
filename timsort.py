@@ -176,6 +176,11 @@ def merge(left,right):
     return arr
 
 def timsort(arr:list):
+    #linear scan to check if sorted
+    if is_sorted(arr) == 1:
+        return arr
+    elif is_sorted(arr) == 2:
+        return reversed(arr)
     #Calculating minimum run length
     RUN = calculate_min_run(len(arr))
     #Splitting array into runs of length n
@@ -233,7 +238,7 @@ def timsort(arr:list):
     return arr2
 
 def main():
-    test = generate_random_numbers(1,100000,16384)
+    test = generate_random_numbers(1,100000,20000)
     print(test)
     print()
     sortedarr = timsort(test)
