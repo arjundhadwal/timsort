@@ -8,6 +8,7 @@ An algorithm that implements the TimSort method for sorting arrays.
 import time
 import math
 import random
+import matplotlib.pyplot as plt
 
 __author__ = "Arjun Dhadwal"
 __version__ = "03-18-26"
@@ -195,7 +196,7 @@ def timsort(arr:list):
         else:
             runs_container.push(binary_insertion_sort(le_run)) #Sorts and pushes the run onto the stack
         if runs_container.size()>2 and type(runs_container.peek())==list:
-            X,Y,Z = len(runs_container.peek()), len(runs_container.peek2()), len(runs_container.peek3())
+            X,Y,Z = len(runs_container.peek()), len(runs_container.peek2()), len(runs_container.peek3()) # type: ignore
             if Z > X+Y and Y>X: #Checking invariants found on Wikipedia for optimal run merging.
                 array = merge(runs_container.peek(), runs_container.peek2())
                 runs_container.pop() #Pop the top two and push the merged big one
@@ -216,7 +217,7 @@ def timsort(arr:list):
                     runs_container.push(temp2) #pushes original top one, now at the top of the Stack
 
     while runs_container.size()>2: #Final merging to put all of the runs together.
-        X,Y,Z = len(runs_container.peek()), len(runs_container.peek2()), len(runs_container.peek3())
+        X,Y,Z = len(runs_container.peek()), len(runs_container.peek2()), len(runs_container.peek3()) # type: ignore
         if Z > X+Y and Y>X: #Checking invariants found on Wikipedia for optimal run merging.
             array = merge(runs_container.peek(), runs_container.peek2())
             runs_container.pop()
@@ -238,12 +239,12 @@ def timsort(arr:list):
     return arr2
 
 def main():
-    test = generate_random_numbers(1,100000,20000)
-    print(test)
-    print()
-    sortedarr = timsort(test)
-    print(sortedarr)
-    print(is_sorted(sortedarr))
+    #test = generate_random_numbers(1,100000,20000)
+    #print(test)
+    #print()
+    #sortedarr = timsort(test)
+    #print(sortedarr)
+    #print(is_sorted(sortedarr))
     """
     Galloping Tests
     arr1 = [1,2,3,4,5,15,16,17,18,19,35,36,37,38,39]
@@ -251,6 +252,19 @@ def main():
     arr3 = merge(arr1, arr2)
     print(arr3)
     """
+    items = []
+    times = []
+    for i in range(1000,51000,1000):
+        test_arr = generate_random_numbers(100, 100000, i)
+        start_time = time.time()
+        timsort(test_arr)
+        stop_time = time.time()
+        elapsed = stop_time-start_time
+        items.append(i)
+        times.append(elapsed)
+        print(i)
+    print(times)
+    plt.plot(items, times, "o")
 
 if __name__ == "__main__":
     main()
