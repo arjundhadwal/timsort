@@ -119,7 +119,7 @@ def binary_insertion_sort(arr:list): #Time complexity of O(nlog(n)) because of t
     return sorte
 
 def merge(left,right):
-    GALLOPCT = 3
+    GALLOPCT = 7
     arr = [None]*(len(left)+len(right))
     lc = 0
     rc = 0
