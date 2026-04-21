@@ -120,7 +120,7 @@ def binary_insertion_sort(arr:list): #Time complexity of O(nlog(n)) because of t
     return sorte
 
 def merge(left,right):
-    GALLOPCT = 7
+    GALLOPCT = 5
     arr = [None]*(len(left)+len(right))
     lc = 0
     rc = 0
@@ -134,37 +134,63 @@ def merge(left,right):
             ac+=1
             left_wins +=1
             right_wins=0
+            
             if left_wins>GALLOPCT:
                 #we start galloping through the left
                 #print("gallop_left")
+                key = right[rc]
                 new_lc_step = 1
-                while lc+new_lc_step<len(left) and left[lc+new_lc_step]<=right[rc]:
+                while lc+new_lc_step<len(left) and left[lc+new_lc_step]<=key:
                     new_lc_step*=2
-                end_index = min(len(left),lc+new_lc_step)
-                target_index = search(left[lc:end_index],right[rc])
+                low = lc+new_lc_step//2
+                high = lc + min(new_lc_step,len(left))
+                target_index = lc + search(left[low:high],key) #Add in to account offset.
+                """
                 for i in range(lc,target_index): #Throwing em on until we hit the target. This is the chunk.
                     arr[ac] = left[i]
                     ac+=1
                     lc+=1
+                """
+                print("gallopleft")
+                print(lc,target_index)
+                print(low,high)
+                arr[ac:ac+(target_index-lc)] = left[lc:target_index]
+                ac += target_index-lc ##amount increased by
+                lc = target_index
+                
+
                 left_wins = 0
+                
         else: #if the right is SMALLER, the left is BIGGER, when galloping we lop on a chunk of the RIGHT array
             arr[ac] = right[rc]
             rc+=1
             ac+=1
             right_wins +=1
             left_wins=0
+            
             if right_wins>GALLOPCT:
                 #we start galloping through the right
                 #print("gallop_right")
+                key = left[lc]
                 new_rc_step = 1
-                while rc+new_rc_step<len(right) and right[rc+new_rc_step]<=left[lc]:
+                while rc+new_rc_step<len(right) and right[rc+new_rc_step]<=key:
                     new_rc_step*=2
-                end_index = min(len(right),rc+new_rc_step)
-                target_index = search(right[rc:end_index],left[lc])
+                high = rc+min(len(right),new_rc_step)
+                low = rc+new_rc_step//2
+                target_index = rc + search(right[low:high],left[lc])
+                """
                 for i in range(rc,target_index): #Throwing em on until we hit the target. This is the chunk.
                     arr[ac] = right[i]
                     ac+=1
                     rc+=1
+                right_wins = 0
+                """
+                print("gallopright")
+                print(rc,target_index)
+                print(low,high)
+                arr[ac:ac+(target_index-rc)] = right[rc:target_index]
+                ac += target_index-rc ##amount increased by
+                rc = target_index
                 right_wins = 0
     while lc<len(left): #appending final items
         arr[ac] = left[lc]
@@ -181,7 +207,7 @@ def timsort(arr:list):
     if is_sorted(arr) == 1:
         return arr
     elif is_sorted(arr) == 2:
-        return reversed(arr)
+        return arr.reverse()
     #Calculating minimum run length
     RUN = calculate_min_run(len(arr))
     #Splitting array into runs of length n
@@ -192,7 +218,7 @@ def timsort(arr:list):
         if is_sorted(le_run) == 1:
             runs_container.push(le_run) #Take advantage of forward sorted runs.
         elif is_sorted(le_run) == 2:
-            runs_container.push(reversed(le_run)) #Take advantage of reverse sorted runs.
+            runs_container.push(le_run.reverse()) #Take advantage of reverse sorted runs.
         else:
             runs_container.push(binary_insertion_sort(le_run)) #Sorts and pushes the run onto the stack
         if runs_container.size()>2 and type(runs_container.peek())==list:
@@ -239,32 +265,10 @@ def timsort(arr:list):
     return arr2
 
 def main():
-    #test = generate_random_numbers(1,100000,20000)
-    #print(test)
-    #print()
-    #sortedarr = timsort(test)
-    #print(sortedarr)
-    #print(is_sorted(sortedarr))
-    """
-    Galloping Tests
-    arr1 = [1,2,3,4,5,15,16,17,18,19,35,36,37,38,39]
-    arr2 = [6,7,8,9,10,11,12,13,21,22,23,24,25]
-    arr3 = merge(arr1, arr2)
-    print(arr3)
-    """
-    items = []
-    times = []
-    for i in range(1000,51000,1000):
-        test_arr = generate_random_numbers(100, 100000, i)
-        start_time = time.time()
-        timsort(test_arr)
-        stop_time = time.time()
-        elapsed = stop_time-start_time
-        items.append(i)
-        times.append(elapsed)
-        print(i)
-    print(times)
-    plt.plot(items, times, "o")
+    randoms = generate_random_numbers(1,100000,40000)
+    sorteds = timsort(randoms)
+    print(sorteds)
+    print(is_sorted(sorteds))
 
 if __name__ == "__main__":
     main()
