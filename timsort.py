@@ -145,15 +145,9 @@ def merge(left,right):
                 low = lc+new_lc_step//2
                 high = lc + min(new_lc_step,len(left))
                 target_index = lc + search(left[low:high],key) #Add in to account offset.
-                """
-                for i in range(lc,target_index): #Throwing em on until we hit the target. This is the chunk.
-                    arr[ac] = left[i]
-                    ac+=1
-                    lc+=1
-                """
-                print("gallopleft")
-                print(lc,target_index)
-                print(low,high)
+                #print("gallopleft")
+                #print(lc,target_index)
+                #print(low,high)
                 arr[ac:ac+(target_index-lc)] = left[lc:target_index]
                 ac += target_index-lc ##amount increased by
                 lc = target_index
@@ -178,16 +172,9 @@ def merge(left,right):
                 high = rc+min(len(right),new_rc_step)
                 low = rc+new_rc_step//2
                 target_index = rc + search(right[low:high],left[lc])
-                """
-                for i in range(rc,target_index): #Throwing em on until we hit the target. This is the chunk.
-                    arr[ac] = right[i]
-                    ac+=1
-                    rc+=1
-                right_wins = 0
-                """
-                print("gallopright")
-                print(rc,target_index)
-                print(low,high)
+                #print("gallopright")
+                #print(rc,target_index)
+                #print(low,high)
                 arr[ac:ac+(target_index-rc)] = right[rc:target_index]
                 ac += target_index-rc ##amount increased by
                 rc = target_index
@@ -265,10 +252,23 @@ def timsort(arr:list):
     return arr2
 
 def main():
-    randoms = generate_random_numbers(1,100000,40000)
-    sorteds = timsort(randoms)
-    print(sorteds)
-    print(is_sorted(sorteds))
+    indices = []
+    items = []
+    times = []
+    for i in range(1000,20001,1000):
+        test_arr = generate_random_numbers(100, 100000, i)
+        start_time = time.time()
+        timsort(test_arr)
+        stop_time = time.time()
+        elapsed = stop_time-start_time
+        print(i,",",int(elapsed*1000)/1000)
+        indices.append(i)
+        times.append(elapsed)
+    print(times)
+    plt.xlabel("Number of items sorted")
+    plt.ylabel("Execution time (seconds)")
+    plt.plot(indices, times, "o")
+    plt.show()
 
 if __name__ == "__main__":
     main()
